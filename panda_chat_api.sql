@@ -1,24 +1,43 @@
 -- phpMyAdmin SQL Dump
--- version 4.4.14
+-- version 3.5.5
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Sep 18, 2016 at 05:11 AM
--- Server version: 5.6.26
--- PHP Version: 5.6.12
+-- Host: sql6.freemysqlhosting.net
+-- Generation Time: Sep 26, 2016 at 07:23 PM
+-- Server version: 5.5.49-0ubuntu0.14.04.1
+-- PHP Version: 5.3.28
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 
 --
--- Database: `panda_chat_api`
+-- Database: `sql6136933`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `chat`
+--
+
+CREATE TABLE IF NOT EXISTS `chat` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `from_id` int(11) NOT NULL,
+  `to_id` int(11) NOT NULL,
+  `message` text NOT NULL,
+  `sent_on` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `from_id` (`from_id`,`to_id`),
+  KEY `to_id` (`to_id`),
+  KEY `to_id_2` (`to_id`),
+  KEY `from_id_2` (`from_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=235 ;
 
 -- --------------------------------------------------------
 
@@ -27,11 +46,15 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE IF NOT EXISTS `conversation` (
-  `id` int(22) NOT NULL,
+  `id` int(22) NOT NULL AUTO_INCREMENT,
   `from_id` varchar(200) NOT NULL,
   `to_id` varchar(200) NOT NULL,
-  `timestamp` varchar(200) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `message` text NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `from_id` (`from_id`),
+  KEY `to_id` (`to_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -55,65 +78,30 @@ CREATE TABLE IF NOT EXISTS `conversation_reply` (
 --
 
 CREATE TABLE IF NOT EXISTS `user` (
-  `id` int(22) NOT NULL,
-  `name` varchar(200) NOT NULL,
-  `password` varchar(200) NOT NULL,
-  `p_photo` varchar(200) NOT NULL,
-  `timestamp` int(255) NOT NULL,
-  `online` varchar(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `fname` varchar(100) NOT NULL,
+  `lname` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `password` varchar(100) NOT NULL,
+  `image` varchar(100) NOT NULL,
+  `create_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `online` varchar(2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+-- --------------------------------------------------------
 
 --
--- Indexes for dumped tables
+-- Table structure for table `wall_status_post`
 --
 
---
--- Indexes for table `conversation`
---
-ALTER TABLE `conversation`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `conversation_reply`
---
-ALTER TABLE `conversation_reply`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `con_id` (`con_id`);
-
---
--- Indexes for table `user`
---
-ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `conversation`
---
-ALTER TABLE `conversation`
-  MODIFY `id` int(22) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `conversation_reply`
---
-ALTER TABLE `conversation_reply`
-  MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `user`
---
-ALTER TABLE `user`
-  MODIFY `id` int(22) NOT NULL AUTO_INCREMENT;
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `conversation_reply`
---
-ALTER TABLE `conversation_reply`
-  ADD CONSTRAINT `fk_conversation_reply_con_id` FOREIGN KEY (`con_id`) REFERENCES `conversation` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+CREATE TABLE IF NOT EXISTS `wall_status_post` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `status` text NOT NULL,
+  `sent_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
