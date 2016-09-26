@@ -13,23 +13,19 @@
     
 
   </head>
-  <body>
-    <!-- <form id="form" action="/login" method="post">
-    <input type="text" id="userLogin" name="email" value="" placeholder="User Name"/>
-    <input type="password" id="userPassword" name="password" value="" placeholder="Password"/>
-    <input type="submit" id="button" value="Send"/> 
-    </form> -->
+  <body class="login_body">
      <div class="form">
           <h1> Panda Online Chat Using Node.Js,Socket Io & MYSQL</h1>
       
       <ul class="tab-group">
-        <li class="tab active"><a href="javascript:void(0)" class="#signup">Sign Up</a></li>
-        <li class="tab"><a href="javascript:void(0)" class="#login">Log In</a></li>
+        <li id="signuptab" class="tab active"><a href="javascript:void(0)" class="#signup">Sign Up</a></li>
+        <li id="logintab" class="tab"><a href="javascript:void(0)" class="#login">Log In</a></li>
       </ul>
       
       <div class="tab-content">
         <div id="signup">   
-          <!-- <h1>Sign Up for Free</h1> -->
+         <h2 class="sign-validationerror"></h2>
+          
           
           <form action="/signup" method="post">
           
@@ -62,6 +58,14 @@
             </label>
             <input type="password"required name="password" autocomplete="off"/>
           </div>
+
+          <!-- <div class="field-wrap">
+              <label class="image">
+                Upload Image<span class="req">*</span>
+              </label>
+              <input type="file" class="image" required name="uploadfile" autocomplete="off" />
+            </div>
+                   -->
           
           <button type="submit" class="button button-block"/>Get Started</button>
           
@@ -70,7 +74,7 @@
         </div>
         
         <div id="login">   
-         <!--  <h1>Welcome Back!</h1> -->
+         <h2 class="login-validationerror"></h2>
           
           <form action="/login" method="post">
           

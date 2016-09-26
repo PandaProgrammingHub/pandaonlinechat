@@ -1,16 +1,188 @@
 <!doctype html>
-  <html>
-   <head>
-    <title>panda chat api</title>
-    <link rel='stylesheet' href='style.css' type='text/css'/>
-    <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
-    <script src="chat.js"></script>
-  </head>
-  <body>
-  <div class="form">
-    <h1 align="center">Welcome To Panda Online Chat</h1>
-    <a href="/logout">Logout</a>
-  </div>
-  </body>
+<html>
+<head>
+  <title>panda chat api</title>
+  <!-- Latest bootstrap compiled and minified CSS -->
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+  <link rel='stylesheet' href='dashboardstyle.css' type='text/css'/>
+
+  <!-- Latest bootstrap compiled JavaScript -->
+  <!-- <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+
+  <script src="https://cdn.socket.io/socket.io-1.2.0.js"></script>
+  <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+  <script src="chat.js"></script>
+  <!-- <script src="bootstrap.min.js"></script> -->
+</head>
+<body class="wall" onload="getWallStatusPost()">
+ <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-2">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="#">Panda Online Chat</a>
+      </div>
+
+      <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/wall"><i class="fa fa-home fa-lg" aria-hidden="true"></i>&nbsp; Dashboard</a></li>
+          <li><a href="http://www.pandaprogramminghub.com/blog/about-me/" target="_blank"><i class="fa fa-university fa-lg" aria-hidden="true"></i>&nbsp; About Me</a></li>
+          <li><a href="/messages"><i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i>&nbsp; Messages</a></li>
+        </ul>
+        <form class="navbar-form navbar-left" role="search">
+          <div class="form-group">
+            <i class="fa fa-search fa-lg" aria-hidden="true"></i>        
+            <input type="text" class="form-control" placeholder="Search">
+          </div>
+          <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        <ul class="nav navbar-nav">
+          <li class="active"><a href="/dashboard"><i class="fa fa-user fa-lg" aria-hidden="true"></i>&nbsp; Welcome <strong class="username"></strong></a></li>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="/logout"><i class="fa fa-sign-out fa-lg" aria-hidden="true"></i>&nbsp; Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+<div class="container">
+    <div class="row profile">
+		<div class="col-md-3">
+			<div class="profile-sidebar">
+				<!-- SIDEBAR USERPIC -->
+				<div class="profile-userpic">
+					<img src="images.png" class="img-responsive" alt="">
+				</div>
+				<!-- END SIDEBAR USERPIC -->
+				<!-- SIDEBAR USER TITLE -->
+				<div class="profile-usertitle">
+					<div class="profile-usertitle-name">
+						
+					</div>
+					
+				</div>
+				<!-- END SIDEBAR USER TITLE -->
+				<!-- SIDEBAR BUTTONS -->
+				<!-- <div class="profile-userbuttons">
+					<button type="button" class="btn btn-success btn-sm">Follow</button>
+					<button type="button" class="btn btn-danger btn-sm">Message</button>
+				</div> -->
+				<!-- END SIDEBAR BUTTONS -->
+				<!-- SIDEBAR MENU -->
+				<div class="profile-usermenu">
+					<ul class="nav">
+						<li class="active">
+							<a href="#">
+							<i class="glyphicon glyphicon-home"></i>
+							Overview </a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="glyphicon glyphicon-user"></i>
+							Account Settings </a>
+						</li>
+						<li>
+							<a href="#" target="_blank">
+							<i class="glyphicon glyphicon-ok"></i>
+							Tasks </a>
+						</li>
+						<li>
+							<a href="#">
+							<i class="glyphicon glyphicon-flag"></i>
+							Help </a>
+						</li>
+					</ul>
+				</div>
+				<!-- END MENU -->
+			</div>
+		</div>
+		<div class="col-md-9">
+			<div class="profile-content">
+
+				<div id="updateBoxBlock" data-step="1" data-intro="You can upload status.">
+					<div class="panel panel-default share borderRound" id="updateGrid">
+						<form action="" method="post" onsubmit="return wallStatusPost();">
+
+						<div class="panel-heading panel-heading-gray title borderRoundTop">
+							<span class="boxName">What's Up</span> <span class="sessionName"></span>? 
+						</div>
+						<div class="panel-body ">
+								<textarea name="status" class="form-control share-text placeUpdate" id="statusText" rows="1" placeholder="Write your status..."></textarea>
+							</div>
+							<div class="panel-footer share-buttons borderRoundBottom">
+								<a href="javascript:void(0);" class="updateControl" id="photo" original-title="Upload Image"><span class="commonPhotos">Photos</span></a>
+
+								<a href="javascript:void(0);" class="updateControl" id="webcamButton" title="Webcam Snap"><span class="boxWebcam">Webcam</span></a>
+
+								<a href="javascript:void(0);" class="updateControl" id="geo" title="Geo Location"><span class="boxLocation">Location</span></a> 
+
+								<span class="pull-right">
+
+<!--
+<input type="submit" value=" Update " id="updateButton" class="update_button wallbutton update_box">
+-->
+ <button class="btn btn-success text-right  send-message-btn pull-right"> <i class="fa fa-location-arrow "></i>Update</button>  
+<!-- <span id="updateButton" class="update_button wallbutton update_box"><i class="fa fa-location-arrow"></i> <button class="btn  buttonUpdate">Update</button></span> -->
+</span>
+</div>
+</form>
+</div>
+</div>
+		<div class="col-lg-offset-3">
+          <div id="loader"    style="display: none;"><img src="loadBars.gif"> Loading...</div>
+          </div>
+		<div class="msg-wrap" id="updateBoxBlock">
+			<!-- <div class="panel panel-primary">
+			  <div class="panel-heading">
+			    <h3 class="panel-title">Panel primary</h3>
+			  </div>
+			  <div class="panel-body">
+			    Panel content
+			  </div>
+			</div> -->
+         </div>
+</div>
+</div>
+</div>
+</div>
+
+<footer class="footer">
+      <div id="footer">
+        <div class="container">
+         <div class="row col-md-offset-2">
+          <div class="col-md-8 col-sm-12">
+            <p class="text-primary"> Copyright © 2016 | Love By © PandaProgrammingHub. </p>
+          </div>
+          <div class="col-md-4 col-sm-12">
+           <p class="text-primary"> follow me
+
+            <a href="https://www.facebook.com/panda.santosh297" class=" btn btn-social-icon btn-sm btn-facebook">
+             <i class="fa fa-facebook sbg-facebook"></i>
+           </a>
+           <a href="https://twitter.com/santoshpandasan" class="btn btn-social-icon btn-sm btn-twitter" >
+             <i class="fa fa-twitter"></i>
+           </a>
+           <a href="https://plus.google.com/+SantoshPanda299" class="btn btn-social-icon btn-sm btn-google-plus">
+             <i class="fa fa-google-plus"></i>
+           </a>
+           <a href="https://www.linkedin.com/in/santosh-panda-a0711b97" class="btn btn-social-icon btn-sm btn-linkedin">
+             <i class="fa fa-linkedin"></i>
+           </a>
+           <a href="https://github.com/pandaprogramminghub" class="btn btn-social-icon btn-sm btn-github">
+             <i class="fa fa-github"></i>
+           </a>
+         </p>
+       </div>
+     </div>
+   </div>
+ </div> 
+
+
+</footer>
+</body>
 </html>

@@ -15,8 +15,12 @@ form #button { color:#FFF; background: #2D9F0B; border: none; padding: 10px;  wi
 html {
   overflow-y: scroll;
 }
-
 body {
+   background: #f0f3f6; 
+  font-family: 'Titillium Web', sans-serif;
+}
+
+.login_body {
   /* background: #c1bdba; */
   background: url("Panda_Online_Chat_background_image.jpeg") no-repeat center center fixed; ;
   -webkit-background-size: cover;
@@ -88,6 +92,14 @@ h1 {
   font-weight: 300;
   margin: 0 0 40px;
 }
+h2 {
+    text-align: center;
+    color: #ffffff;
+    font-weight: 200;
+    margin: 0 0 40px;
+    background-color: #F75555;
+    border-left: 5px solid #FBD7D7;
+}
 
 label {
   position: absolute;
@@ -101,6 +113,19 @@ label {
   pointer-events: none;
   font-size: 22px;
 }
+label.image {
+  position: inherit;
+  -webkit-transform: translateY(6px);
+          transform: translateY(6px);
+  left: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  -webkit-transition: all 0.25s ease;
+  transition: all 0.25s ease;
+  -webkit-backface-visibility: hidden;
+  pointer-events: none;
+  font-size: 22px;
+}
+
 label .req {
   margin: 2px;
   color: #1ab188;
@@ -134,6 +159,19 @@ input, textarea {
   -webkit-transition: border-color .25s ease, box-shadow .25s ease;
   transition: border-color .25s ease, box-shadow .25s ease;
 }
+input.image {
+  font-size: 22px;
+    display: block;
+    width: 100%;
+    height: 100%;
+    background: none;
+    background-image: none;
+    border: none;
+    color: #ffffff;
+  -webkit-transition: border-color .25s ease, box-shadow .25s ease;
+  transition: border-color .25s ease, box-shadow .25s ease;
+}
+
 input:focus, textarea:focus {
   outline: 0;
   border-color: #1ab188;
