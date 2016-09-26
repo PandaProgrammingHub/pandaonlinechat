@@ -56,7 +56,7 @@ function startConversionWithUser(e){
           data.to_id = to_id;
           data.from_id = from_id;
 
-     $.ajax('http://localhost:8080/startConversionWithUser', {
+     $.ajax('/startConversionWithUser', {
                   type: 'POST',
                   data: data,
                   
@@ -343,7 +343,7 @@ $(document).ready(function(){
 });
  
 function getAllUsers(){
-  $.ajax('http://localhost:8080/getAllUsers', {
+  $.ajax('/getAllUsers', {
               type: 'POST',
               success: function(res) { 
                     var html = '';
@@ -390,7 +390,7 @@ function getAllUsers(){
 
 function getWallStatusPost(){
 
-  $.ajax('http://localhost:8080/getWallStatusPost', {
+  $.ajax('/getWallStatusPost', {
               type: 'POST',
               success: function(res) { 
                     var html = '';
