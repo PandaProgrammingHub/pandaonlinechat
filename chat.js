@@ -98,19 +98,13 @@ function chatBoxScrollDown(){
   $('.msg-wrap').animate({
       scrollTop: $('.msg-wrap').get(0).scrollHeight}, 2000);
 }
-function cutString(text){    
-             
-     var charsToCutTo = 30;
-        if(text.length>charsToCutTo){
-            var strShort = "";
-            for(i = 0; i < charsToCutTo; i++){
-                strShort += text[i];
-            }
-            
-           strShort = strShort + "...";
-           return strShort;
-        }            
-     };
+
+
+  function cutString(str) {
+    var textstring = str.split(/\s+/).slice(0,5).join(" ");
+
+    return textstring+'...';
+}
 
  /*------login start here-----------*/
  /*socket.on('login', function (res,userinfo) {
@@ -200,16 +194,18 @@ socket.on('chatMessage', function(from,to, msg){
   $('.msg-wrap').append('<div class="media msg"><a class="pull-left" href="#"><img class="media-object img-circle"  data-src="holder.js/64x64" alt="64x64" style="width: 32px; height: 32px;" src="images.png"></a><div class="media-body '+ message_send_by +'"><small class="pull-right time"><i class="fa fa-clock-o"></i>'+ sent_on +'</small><h5 class="media-heading">'+ nme +'</h5><small class="col-lg-10">'+msg+'</small></div></div>');
      chatBoxScrollDown();
   }else if(active_msg_wrap_for == from) {
+        if(to == current_user_id ){
 
     $('.msg-wrap').append('<div class="media msg"><a class="pull-left" href="#"><img class="media-object img-circle"  data-src="holder.js/64x64" alt="64x64" style="width: 32px; height: 32px;" src="images.png"></a><div class="media-body '+ message_send_by +'"><small class="pull-right time"><i class="fa fa-clock-o"></i>'+ sent_on +'</small><h5 class="media-heading">'+ nme +'</h5><small class="col-lg-10">'+msg+'</small></div></div>');
      chatBoxScrollDown();
+   }
   }else if(to == current_user_id){
     //alert("hello checking"+from);
     var user = parseInt(from);
     $('.conversation').each(function(index,value){
       if($(value).data( "user" ) == user){
         //alert("inside conversation loop");
-        console.log(value);
+        //console.log(value);
         if ($('.newMessage_'+user).is(':empty')){
           $('.notifyTyping_'+user).empty();
           $(value).addClass('newmessage');

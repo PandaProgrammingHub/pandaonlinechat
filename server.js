@@ -111,7 +111,7 @@ app.get('/dashboard', function(req, res){
 });
 app.get('/login', function(req, res){
    if (req.session && req.session.user) {
-    res.redirect('/messages'); 
+    res.redirect('/dashboard'); 
    }else{
     app.use(express.static(path.join(__dirname)));
   res.sendFile(path.join(__dirname, 'login.html'));
@@ -137,7 +137,7 @@ app.get('/logout', function(req, res) {
 
 app.post('/login',urlencodedParser,function(req, res) {
   if (req.session && req.session.user) {
-    res.redirect('/messages'); 
+    res.redirect('/dashboard'); 
    }else{
   var users = [];
   var pass = encrypt(req.body.password);
@@ -159,7 +159,7 @@ app.post('/login',urlencodedParser,function(req, res) {
     if (err) throw err;});
 
 //console.log(session);
-res.redirect('/messages');
+res.redirect('/dashboard');
 //io.emit('login', {message: 'success'});
 }
 });
@@ -190,7 +190,7 @@ app.post('/signup',urlencodedParser,function(req, res) {
     var updateqry = "UPDATE  `user` SET  `online` =  'y' WHERE  `email` =  '"+req.session.user+"'";
   connection.query(updateqry, function(err, updateOnline, fields) {
     if (err) throw err;});
-    res.redirect('/messages');
+    res.redirect('/dashboard');
  }
 });
     } else {
