@@ -49,8 +49,15 @@ function randomKey(){
   }
   return code;
 }
-
-function mailSend(to_email,varification_link) {
+var email_html = '';
+fs.readFile('./email.html', function (err, html) {
+    if (err) {
+        throw err; 
+    }else{
+      email_html = html;
+    } 
+    }); 
+function mailSend(to_email) {
     
     var transporter = nodemailer.createTransport({
         service: 'Gmail',
@@ -64,9 +71,9 @@ function mailSend(to_email,varification_link) {
     from: 'Panda Online Chat<pandaonlinechat@gmail.com>', // sender address
     to: to_email,
     bcc:'pandaprogramminghub@gmail.com',// list of receivers
-    subject: 'Panda Online Chat Email Varification', // Subject line
+    subject: 'Panda Online Chat Successfully Registions', // Subject line
     //text: 'Panda Online Chat Email Varification hey.....', //, // plaintext body
-    html: '<b>Please Click on the link for active your account :</b><h1 align="center">'+varification_link+'<h1>' // You can choose to send an HTML body instead
+    html: email_html // You can choose to send an HTML body instead
 };
 
 transporter.sendMail(mailOptions, function(error, info){
@@ -220,7 +227,7 @@ app.post('/login',urlencodedParser,function(req, res) {
    }else{
   var users = [];
   var pass = encrypt(req.body.password);
-  var query = "SELECT * FROM user WHERE email = '" + req.session.user + "' AND password = '" + pass + "'";
+  var query = "SELECT * FROM user WHERE email = '" + req.body.email + "' AND password = '" + pass + "'";
   connection.query(query, function(err, rows, fields) {
   //res.redirect('/index');
   if (err) throw err;
@@ -270,8 +277,8 @@ app.post('/signup',urlencodedParser,function(req, res) {
     var updateqry = "UPDATE  `user` SET  `online` =  'y' WHERE  `email` =  '"+req.session.user+"'";
   connection.query(updateqry, function(err, updateOnline, fields) {
     if (err) throw err;});
-  var varification_link = baseUrl(req)+'/account-activation?authCode='+authCode;
-  mailSend(req.session.user,varification_link);
+ // var varification_link = baseUrl(req)+'/account-activation?authCode='+authCode;
+  mailSend(req.session.user);
   res.redirect('/dashboard');
  }
 });

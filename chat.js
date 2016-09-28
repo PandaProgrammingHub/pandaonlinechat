@@ -68,11 +68,15 @@ function startConversionWithUser(e){
                             to_user_name = res.toUserInfo[i].fname +' '+res.toUserInfo[i].lname;
                             $('.chat_with_user_name').append('<div class="conversationHead">' + to_user_name +'</div>');
                           }
+                          if(res.conversionMessage){
                         for (var i = 0; i < res.conversionMessage.length; i++){
                             var nme = (res.conversionMessage[i].from_id == current_user_id ) ? 'Me' : to_user_name;
                             var message_send_by = (nme == 'Me') ? 'message_send_by_me' : 'message_send_by_other';
                             conversation_html +='<div class="media msg"><a class="pull-left" href="#"><img class="media-object img-circle"  data-src="holder.js/64x64" alt="64x64" style="width: 32px; height: 32px;" src="images.png"></a><div class="media-body '+ message_send_by +'"><small class="pull-right time"><i class="fa fa-clock-o"></i>'+ res.conversionMessage[i].sent_on +'</small><h5 class="media-heading">'+ nme +'</h5><small class="col-lg-10">'+$.emoticons.replace(res.conversionMessage[i].message)+'</small></div></div>';
                           }
+                        }else{
+                          conversation_html ="No conversation found";
+                        }
                     $('.msg-wrap').html(conversation_html);
 
                   // console.log('success');
