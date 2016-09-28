@@ -31,9 +31,10 @@ function decrypt(text){
 }
 /*var hw = encrypt("hello world");
 console.log(hw+"\n");
-// outputs hello world
+// outputs hello world 
 console.log(decrypt(hw));
 */
+//console.log(decrypt("55dc87c47427"));
 /*io.use(socketHandshake({store: sessionStore, key:'sid', secret:'secret', parser:cookieParser()}));*/
 app.use(session({
   cookieName: 'session',
