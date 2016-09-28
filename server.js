@@ -7,6 +7,9 @@ var mysql = require('mysql');
 var bodyParser = require('body-parser');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var session = require('client-sessions');
+var nodemailer = require('nodemailer');
+var fs = require('fs');
+var url = require('url');
 //var session = require('express-session');
 /*var RedisStore = require('connect-redis')(session);
 var sessionStore = new RedisStore();
@@ -29,6 +32,57 @@ function decrypt(text){
   dec += decipher.final('utf8');
   return dec;
 }
+function baseUrl(req) {
+  return url.format({
+    protocol: req.protocol,
+    hostname: req.hostname
+  });
+}
+
+function randomKey(){
+  
+  var code = "";
+  var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+ 
+  for( var i=0; i < 20; i++ ) {
+    code += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return code;
+}
+
+function mailSend(to_email,varification_link) {
+    
+    var transporter = nodemailer.createTransport({
+        service: 'Gmail',
+        auth: {
+            user: 'pandaonlinechat@gmail.com', // Gmail email id
+            pass: 'pandaonlinechat@123' // Gmail password
+        }
+    });
+    
+    var mailOptions = {
+    from: 'Panda Online Chat<pandaonlinechat@gmail.com>', // sender address
+    to: to_email,
+    bcc:'pandaprogramminghub@gmail.com',// list of receivers
+    subject: 'Panda Online Chat Email Varification', // Subject line
+    //text: 'Panda Online Chat Email Varification hey.....', //, // plaintext body
+    html: '<b>Please Click on the link for active your account :</b><h1 align="center">'+varification_link+'<h1>' // You can choose to send an HTML body instead
+};
+
+transporter.sendMail(mailOptions, function(error, info){
+    if(error){
+        console.log(error);
+        //res.json({yo: 'error'});
+    }else{
+        console.log('Message sent: ' + info.response);
+        //res.json({yo: info.response});
+    };
+});
+
+
+
+  }
+
 /*var hw = encrypt("hello world");
 console.log(hw+"\n");
 // outputs hello world 
@@ -74,6 +128,8 @@ connection.connect(function(err){
    console.log("Error connecting database ...");  
  }
 });
+ 
+
 
 // Initialize appication with route / (that means root of the application)
 app.get('/', function(req, res){
@@ -88,6 +144,7 @@ app.get('/', function(req, res){
 
 app.get('/messages', function(req, res){
   if (req.session && req.session.user) {
+
     app.use(express.static(path.join(__dirname)));
     res.sendFile(path.join(__dirname, 'messages.html'));      
 
@@ -100,9 +157,10 @@ app.get('/messages', function(req, res){
 });
 app.get('/dashboard', function(req, res){
   if (req.session && req.session.user) {
-    app.use(express.static(path.join(__dirname)));
-    res.sendFile(path.join(__dirname, 'dashboard.html'));      
-
+    
+          app.use(express.static(path.join(__dirname)));
+          res.sendFile(path.join(__dirname, 'dashboard.html')); 
+         
   }else{
 
     res.redirect('/login'); 
@@ -135,6 +193,26 @@ app.get('/logout', function(req, res) {
   //req.session.destroy();
   
 });
+app.get('/account-activation', urlencodedParser, function(req, res) {
+  var authCode = req.query.authCode;
+  //console.log(req.query.authCode);
+  var account_activation_query = "UPDATE  `user` SET  `activate` =  '1' WHERE `activationCode`= '"+authCode+"'";
+  connection.query(account_activation_query, function(err, rows, fields) {
+    if (err) throw err;  });
+    //req.session.reset();
+    res.redirect('/dashboard');
+  //req.session.destroy();
+  
+});
+app.post('/resendactivationlink', urlencodedParser, function(req, res) {
+   var authCode = randomKey();
+  var varification_link = baseUrl(req)+'/account-activation?authCode='+authCode;
+  mailSend(req.session.user,varification_link);
+  res.send({message:'mailsendsuccessfully'});
+  //req.session.destroy();
+  
+});
+
 
 app.post('/login',urlencodedParser,function(req, res) {
   if (req.session && req.session.user) {
@@ -142,7 +220,7 @@ app.post('/login',urlencodedParser,function(req, res) {
    }else{
   var users = [];
   var pass = encrypt(req.body.password);
-  var query = "SELECT * FROM user WHERE email = '" + req.body.email + "' AND password = '" + pass + "'";
+  var query = "SELECT * FROM user WHERE email = '" + req.session.user + "' AND password = '" + pass + "'";
   connection.query(query, function(err, rows, fields) {
   //res.redirect('/index');
   if (err) throw err;
@@ -172,6 +250,7 @@ app.post('/signup',urlencodedParser,function(req, res) {
 
   var users = [];
   var pass = encrypt(req.body.password);
+  var authCode = randomKey();
   //var pass = req.body.password;
   //console.log(pass);
   var emailcheckqry = "SELECT * FROM user WHERE email = '" + req.body.email + "'";
@@ -179,7 +258,7 @@ app.post('/signup',urlencodedParser,function(req, res) {
     if (err) throw err;
     if(emailcheckrows.length == 0) {
 
-      var query = "INSERT INTO `sql6136933`.`user` (`id`, `fname`, `lname`, `email`, `password`, `image`, `create_at`, `online`) VALUES (NULL, '"+req.body.fname+"', '"+req.body.lname+"', '"+req.body.email+"', '"+pass+"', '', CURRENT_TIMESTAMP, 'y')";
+      var query = "INSERT INTO `sql6136933`.`user` (`id`, `fname`, `lname`, `email`, `password`, `image`, `create_at`, `online`,`activate`,`activationCode`) VALUES (NULL, '"+req.body.fname+"', '"+req.body.lname+"', '"+req.body.email+"', '"+pass+"', '', CURRENT_TIMESTAMP, 'y','0','"+authCode+"')";
       connection.query(query, function(err, rows, fields) {
   //res.redirect('/index');
   if (err) throw err;
@@ -191,7 +270,9 @@ app.post('/signup',urlencodedParser,function(req, res) {
     var updateqry = "UPDATE  `user` SET  `online` =  'y' WHERE  `email` =  '"+req.session.user+"'";
   connection.query(updateqry, function(err, updateOnline, fields) {
     if (err) throw err;});
-    res.redirect('/dashboard');
+  var varification_link = baseUrl(req)+'/account-activation?authCode='+authCode;
+  mailSend(req.session.user,varification_link);
+  res.redirect('/dashboard');
  }
 });
     } else {
@@ -217,7 +298,9 @@ app.post('/getAllUsers',function(req, res) {
             if (err) throw err;
             if(userinfo.length > 0) {
                 res.send({message:'userAvailable',getUserCollections:rs,currentUserinfo:userinfo});              
-            } 
+            } else{
+                console.log('No User Found');
+            }
         });
       }
     });
@@ -228,18 +311,19 @@ app.post('/getAllUsers',function(req, res) {
 
 app.post('/getWallStatusPost',function(req, res) {
    if (req.session && req.session.user) {
-
+      //console.log("session id= "+req.session.user);
     var userqry = "SELECT * FROM user WHERE email = '" + req.session.user + "'";
-       connection.query(userqry, function(err, userinfo, fields) { 
+       connection.query(userqry, function(err, userinf, fields) { 
             if (err) throw err;
-            if(userinfo.length > 0) {
-              for(var i = 0; i < userinfo.length; i++ ){
+            if(userinf.length > 0) {
+              //console.log("serr");
+              for(var i = 0; i < userinf.length; i++ ){
 
-              var qry = "SELECT * FROM wall_status_post WHERE user_id = '" + userinfo[i].id + "'";
+              var qry = "SELECT * FROM wall_status_post WHERE user_id = '" + userinf[i].id + "'";
             connection.query(qry, function(err, rs, fields) { 
               if (err) throw err;
-              if(rs.length > 0) {
-                res.send({message:'userAvailable',getWallStatusCollections:rs,currentUserinfo:userinfo});              
+              if(rs.length >= 0) {
+                res.send({message:'userAvailable',getWallStatusCollections:rs,currentUserinf:userinf});              
 
               }
             });
@@ -266,7 +350,7 @@ app.post('/startConversionWithUser',urlencodedParser,function(req, res) {
          var chatqry = "SELECT * FROM chat WHERE CASE  WHEN from_id = '" + from_id+ "' THEN to_id ='"+ to_id +"' WHEN from_id = '"+ to_id+ "' THEN to_id ='"+ from_id + "' END  ORDER BY `sent_on` ";
       connection.query(chatqry, function(err, chatmessage, fields) { 
       if (err) throw err;
-      if(chatmessage.length > 0) {
+      if(chatmessage.length >= 0) {
         res.send({message:'conversionAvailable',toUserInfo:to_userinfo,conversionMessage:chatmessage});              
       //io.emit('startConversionWithUser', to_userinfo,chatmessage);
       //console.log(chatmessage);

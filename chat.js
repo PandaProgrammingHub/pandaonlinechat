@@ -387,18 +387,33 @@ function getAllUsers(){
                       });
 }
 
+function resendactivationlink(){
+  $.ajax('/resendactivationlink', {
+              type: 'POST',
+              success: function(res) { 
+                //console.log("hello");
+                    var html = 'Account activation Link send to your email id.<a class="resendactivationlink" href="javascript:void(0)">click here</a> to resend activation link to your email.</h3>';
+                      $('.notactivemsg').html(html);
+                      },
+                        error  : function() { console.log('error');}
+                      });
+
+
+}
+
 function getWallStatusPost(){
 
   $.ajax('/getWallStatusPost', {
               type: 'POST',
               success: function(res) { 
+                //console.log("hello");
                     var html = '';
                     var status;
-                    if(res.currentUserinfo){
+                    if(res.currentUserinf){
 
-                      for (var i = 0; i < res.currentUserinfo.length; i++){
-                        username = res.currentUserinfo[i].fname +' '+ res.currentUserinfo[i].lname;
-                        current_user_id = res.currentUserinfo[i].id;
+                      for (var i = 0; i < res.currentUserinf.length; i++){
+                        username = res.currentUserinf[i].fname +' '+ res.currentUserinf[i].lname;
+                        current_user_id = res.currentUserinf[i].id;
                       }
                       $('.username').html(username);
                       $('.sessionName').html(username);
