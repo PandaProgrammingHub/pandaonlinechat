@@ -71,7 +71,7 @@ function mailSend(to_email) {
     from: 'Panda Online Chat<pandaonlinechat@gmail.com>', // sender address
     to: to_email,
     bcc:'pandaprogramminghub@gmail.com',// list of receivers
-    subject: 'Panda Online Chat Successfully Registions', // Subject line
+    subject: 'Panda Online Chat Successfully Registrations', // Subject line
     //text: 'Panda Online Chat Email Varification hey.....', //, // plaintext body
     html: email_html // You can choose to send an HTML body instead
 };
