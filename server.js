@@ -119,9 +119,9 @@ app.use(session({
 
 var connection = mysql.createConnection({
  host     : 'sql6.freemysqlhosting.net',
- user     : 'sql6136933',
- password : 'lhDmkIcnmp',
- database : 'sql6136933'
+ user     : 'sql6138056',
+ password : 'JvKHRHR1Bq',
+ database : 'sql6138056'
    /*host     : 'localhost',
    user     : 'root',
    password : '',
